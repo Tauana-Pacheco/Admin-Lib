@@ -1,14 +1,6 @@
-class Employee:
-    def __init__(self, id, name, email):
-        self.id = id
-        self.name = name
-        self.email = email
-
-class LibraryManager(Employee):
-    pass
-
-class Receptionist(Employee):
-    pass
-
-class Cataloger(Employee):
-    pass
+from person import Person
+class Employee(Person):
+    def __init__(self, user_name, _password, user_id, email, role, address, date_of_birth, employee_id):
+        super().__init__(user_name, _password, user_id, email, role, address, date_of_birth)
+        self.employee_id = employee_id
+        
