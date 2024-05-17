@@ -1,31 +1,30 @@
-
-
 class Person:
-    def __init__(self, user_name, _password, user_id, email, role, address, date_of_birth, contact):
-        self.user_id = user_id
-        self.email = email
+    def __init__(self, user_name, _password, age, email, address, contact):
         self.user_name = user_name
         self._password = _password
-        self.role = role
+        self.age = age
+        self.email = email
         self.address = address
-        self.date_of_birth = date_of_birth
         self.contact = contact
-
-
-    def can_perform_action(self, action):
-        return action in self.role.permissions 
-
+        self.livros_emprestados = [] 
+        self.livros_reservados = []
+        self.livros_renovados = []
+        self.id_user = []
+        
     def get_address(self):
         return self.address
 
-    def get_date_of_birth(self):
-        return self.date_of_birth
-    
     def get_contact(self):
         return self.contact
+
+    def get_password(self):
+        return self._password
+    
+    def set_password(self, password):
+        self._password = password
     
     def set_address(self, address):
         self.address = address
+    
 
-    def set_date_of_birth(self, date_of_birth):
-        self.date_of_birth = date_of_birth
+
