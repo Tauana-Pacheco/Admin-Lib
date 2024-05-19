@@ -1,5 +1,6 @@
 from person import Person
 from books import Book
+from loan import Loan
 
 class User(Person):
     def __init__(self, user_name, _password,  age, email, address, contact, matricula, ativo):
@@ -75,20 +76,12 @@ class User(Person):
         else:
             print("O livro está disponível para empréstimo.")
 
-class Loan: 
-    def __init__(self, status, start_date, end_date, user_name, book):
-        self.status = status
-        self.start_date = start_date
-        self.end_date = end_date
-        self.user_name = user_name
-        self.book = book
-
 
 # Criar um usuário
 user = User("Alice", "senha123", 25, "alice@example.com", "123 Main Street", "555-1234", "12345", True)
 
  # Criar um empréstimo
-book = Book(id=1, title="Dom Quixote", author="Miguel de Cervantes", year_of_publication=1605, num_of_editions=1, num_of_copies=10)
+book = Book(id=1, title="Dom Quixote", author="Miguel de Cervantes", year_of_publication=1605, num_of_editions=1, num_of_copies=10, num_of_pages=200)
 loan = Loan("Ativo", "2024-05-20", "2024-06-20", "Alice", book)  # Suponha que você tenha uma instância válida de Book
 
  # Adicionar o empréstimo ao usuário
