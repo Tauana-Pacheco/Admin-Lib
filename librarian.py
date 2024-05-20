@@ -2,9 +2,11 @@ from datetime import datetime
 from borrow import Borrow
 from user import User
 from books import Book
+from employee import Employee
 
-class Librarian:
-  def __init__(self, id_librarian):
+class Librarian(Employee):
+  def __init__(self, name, _password, _age, _email, _address, _contact, id_librarian):
+    super().__init__(name, _password, _age, _email, _address, _contact)
     self.id_librarian = id_librarian
     self.books = []
 
@@ -12,6 +14,7 @@ class Librarian:
      return self.books
 
   # Empresta livro
+  ##### talvez retirar
   def borrow_books(self, books, user):
     if books.available == False:
       print(f"O books '{books.title}' não está disponível para empréstimo.")
@@ -24,12 +27,12 @@ class Librarian:
       return borrwed
 
   # Adiciona novos Livros 
-  def add_new_books(self, books):
+  def _add_new_books(self, books):
       for book in books:
           self.books.append(book)
       
   # Remove Livros
-  def remove_books(self, books):
+  def _remove_books(self, books):
      for book in books:
           self.books.remove(book)
   
@@ -37,16 +40,15 @@ class Librarian:
 livro = Book('978-3-16-148410-0', "O Senhor dos Anéis", "J.R.R. Tolkien", "123456789", 10, 20, 1000)
 usuario = User("Alice", "senha123", 25, "alice@example.com", "123 Main Street", "555-1234", "12345", True)
 
-librarian = Librarian("L3456")
+librarian = Librarian('Maria', 's12345', 22, 'van@gmail.com', 'Rua Pindaíba, 33', '11874259631', 'V2343')
 librarian.borrow_books(livro, usuario)
 
 
 # Adiciona novos Livros 
-bibliotecario = Librarian("M2345")
 novos_livros = ['Livro B', 'Livro C']
-bibliotecario.add_new_books(novos_livros)
+librarian._add_new_books(novos_livros)
 
-print(bibliotecario.get_books())
+print(librarian.get_books())
 
-bibliotecario.remove_books(novos_livros)
-print(bibliotecario.get_books()) 
+librarian._remove_books(novos_livros)
+print(librarian.get_books()) 

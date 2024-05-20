@@ -2,14 +2,14 @@ from books import Book
 from borrow import Borrow
 
 class User():
-    def __init__(self, user_name, _password,  age, email, address, contact, matricula, ativo):
+    def __init__(self, user_name, _password,  age, email, address, contact, id_user, ativo):
         self.user_name = user_name
         self._password = _password
         self.age = age
         self.email = email
         self.address = address
         self.contact = contact
-        self.matricula = matricula
+        self.matricula = id_user
         self.ativo = ativo
         self.loans = []
         self.users = []
@@ -29,8 +29,8 @@ class User():
     def get_password(self):
         return self._password
 
-    def get_matricula(self):
-        return self.matricula
+    def get_id_user(self):
+        return self.id_user
 
     def set_email(self, email):
         self.email = email
@@ -41,8 +41,8 @@ class User():
     def set_address(self, address):
         self.address = address
 
-    def set_matricula(self, matricula):
-        self.matricula = matricula    
+    def set_id_user(self, id_user):
+        self.id_user = id_user    
 
     def register(self,users):
         self.users.append(users)
