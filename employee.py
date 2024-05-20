@@ -1,4 +1,4 @@
-class Person:
+class Employee:
     def __init__(self, user_name, _password, age, email, address, contact):
         self.user_name = user_name
         self._password = _password
@@ -6,9 +6,6 @@ class Person:
         self.email = email
         self.address = address
         self.contact = contact
-        self.livros_emprestados = [] 
-        self.livros_reservados = []
-        self.livros_renovados = []
         self.id_user = []
         
     def get_address(self):
