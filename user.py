@@ -12,7 +12,8 @@ class User():
         self.matricula = matricula
         self.ativo = ativo
         self.loans = []
-    
+        self.users = []
+      
     def get_user_name(self):
         return self.user_name
 
@@ -29,7 +30,7 @@ class User():
         return self._password
 
     def get_matricula(self):
-        return self._matricula
+        return self.matricula
 
     def set_email(self, email):
         self.email = email
@@ -43,19 +44,8 @@ class User():
     def set_matricula(self, matricula):
         self.matricula = matricula    
 
-    def register(self):
-        # user_name = input("Digite um nome de usuário: ")
-        # _password = input('senha123')
-        # age = input("Digite a idade: ")
-        # email = input('Digite o email: ')
-        # contact = input("Telefone: ")
-        # matricula = input("Digite a matrícula: ")
-        # ativo = True
-        # address = input("Endereço: ")
-        # new_user = User(user_name, _password,  age, email, address, contact, matricula, ativo)
-        # print("Usuário registrado com sucesso!")
-        # return new_user
-        pass
+    def register(self,users):
+        self.users.append(users)
      
     def login(self, user_name, password):
         if user_name == self.user_name and password == self._password:
@@ -65,46 +55,37 @@ class User():
             print("Usuário ou senha incorretos. Tente novamente.")
             return False
  
-    # Solicitar emprestimo de livros
-    def request_borrow(self,  books, user):
-        borrowed = Borrow.borrow_books(self, books, user)
-        return borrowed
-
     # Reserva livro
-    def reserve_book(self, books):
-        if Borrow.book in self.borrowed_books:
-            print("O livro está indisponível no momento.")
-        elif books in self.livros_reservados:
-            print("O livro já está reservado por você.")
-        else:
-            if not books.available:
-                print("O livro está indisponível no momento.")
-            else:
-                self.livros_reservados.append(books)
-                print("Reserva realizada com sucesso.")
+    def reserve_book(self, borrow_instance, book):
+        borrow_instance.reserve_book(book)
+
+    # Verifica disponibilidade do livro
+    def check_available(self, borrow_instance, book):
+        borrow_instance.check_available(book)
     
-    # Visualizar quantidades de livros emprestados
-    def view_quantity_books_loaned(self): 
-        active_loans = [loan for loan in self.loans if loan.status == "Ativo"]
-        return len(active_loans)
-    
+    # Devolver o livro
+    def returned_book(self, borrow_instance, returned_books):
+        borrow_instance.returned_book(returned_books)
 
 # # Criar usuário
-user = User("Alice", "senha123", 25, "alice@example.com", "123 Main Street", "555-1234", "12345", True)
+user = User("Alice", "senha123", 25, "alice@example.com", "Rua piaui, 200", "555-1234", "12345", True)
 
-#  # Fazer empréstimo
 book = Book(isbn="978-3-16-148410-0", title="Dom Quixote", author="Miguel de Cervantes", year_of_publication=1605, num_of_editions=1, num_of_copies=10, num_of_pages=200)
 loan = Borrow("Ativo", "2024-05-20", "2024-06-20", "Alice", book)  # Suponha que você tenha uma instância válida de Book
 
-# Visualizar quantidade de emprestimos de livros
-print(user.view_quantity_books_loaned())
+livros_devolvidos = ["Senhor dos Aneis", "Bras Cubas"]
+user.check_available(loan, book)
+user.reserve_book(loan, book)
+user.returned_book(loan, livros_devolvidos)
 
-#  # user_name, _password,  age, email, address, contact, matricula, ativo
+
+# Adicionar usuário
+new_user = User("Joana", "senha123", 25, "joana@example.com", "Rua camargo, 50", "555-1234", "12345", True)
+new_user.register(new_user)
+
+# Login bem-sucedido
 user1 = User("fulano", "senha123", 25, "fulano@example.com", "Rua X, Cidade Y", 58478,"123456789", True)
-# user1.register_new_user()
+attempt_1 = user1.login("fulano", "senha123")  
 
-#  # Tentativa de login
-attempt_1 = user1.login("fulano", "senha123")  # Login bem-sucedido
-attempt_2 = user1.login("fulano", "senha_errada")  # Usuário ou senha incorretos
-
-###### refinar os metodos
+ # Usuário ou senha incorretos
+attempt_2 = user1.login("fulano", "senha_errada")

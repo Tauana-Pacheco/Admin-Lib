@@ -1,3 +1,5 @@
+from books import Book
+
 class Borrow: 
     def __init__(self, status, start_date, end_date, user_name, book_name):
         self.status = status
@@ -5,7 +7,6 @@ class Borrow:
         self.end_date = end_date
         self.user_name = user_name
         self.book_name = book_name
-        self.books = []
         self.borrowed_books = [] 
         self.reserved_books = []
         self.returned_books = []
@@ -52,20 +53,25 @@ class Borrow:
         else:
             print("O livro está disponível para empréstimo.")
     
-    # Visualizar o status do empréstimo
-    def view_loan_status(self):
-        if self.loans:
-            print("Status dos empréstimos:")
-            for self.loans in self.loans:
-                print(f"Status: {self.status}, Livro: {self.book_name}, Data de início: {self.start_date}, Data de término: {self.end_date}")
-        else:
-            print("Você não tem empréstimos ativos.")
-    
     # Devolve Livro
-    def returned_books(self, returned_books):
-        for books in returned_books:
-            if books in self.borrowed_books:
-                self.borrowed_books.remove(books)
-                print(f"O livro '{self.book_name}' foi devolvido com sucesso.")
+    def returned_book(self, returned_books):
+        for book in returned_books:
+            if book in self.borrowed_books:
+                self.borrowed_books.remove(book)
+                print(f"O livro '{book}' foi devolvido com sucesso.")
             else:
-                print(f"O livro '{self.book_name}' não está emprestado pelo usuário.")
+                print(f"O livro '{book}' não está emprestado pelo usuário.")
+
+    # Reserva livro
+    def reserve_book(self, books):
+        if books in self.borrowed_books:
+            print("O livro está indisponível no momento.")
+        elif books in self.reserved_books:
+            print("O livro já está reservado por você.")
+        else:
+            if self.status == 'INDISPONÍVEL':
+                print("O livro está indisponível no momento.")
+            else:
+                self.reserved_books.append(books)
+                print("Reserva realizada com sucesso.")
+    

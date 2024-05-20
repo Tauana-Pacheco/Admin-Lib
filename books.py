@@ -71,8 +71,8 @@ class PhysicalBook(Book):
 
 
 # Livros fisícos
-# book = PhysicalBook('Kindred', 'Octavia Buttler', 1990, 'capa dura', 10, 5, 3, 205)
-# book.get_info_book()
+#book = PhysicalBook('Kindred', 'Octavia Buttler', 1990, 'capa dura', 10, 5, 3, 205)
+#book.get_info_book()
 
 class DigitalBook(Book):
     def __init__(self,isbn, title, author, file_size, year_of_publication, num_of_editions, num_of_copies, num_of_pages):
