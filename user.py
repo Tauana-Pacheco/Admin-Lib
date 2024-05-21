@@ -1,19 +1,32 @@
+from db import create_connection, close_connection
 from books import Book
 from borrow import Borrow
 
 class User():
-    def __init__(self, user_name, _password,  age, email, address, contact, id_user, ativo):
+    def __init__(self, id, user_name, _password,  age, email, address, id_user,  contact, ativo):
+        self.id = id
         self.user_name = user_name
         self._password = _password
         self.age = age
         self.email = email
         self.address = address
-        self.contact = contact
         self.id_user = id_user
+        self.contact = contact
         self.ativo = ativo
         self.loans = []
         self.users = []
-      
+
+    def save_to_db(self):
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO User (name, age, email, address, id_user, contact, ativo) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+            (self.user_name, self.age, self.email, self.address, self.id_user, self.contact, self.ativo))
+            connection.commit()
+            cursor.close()
+            close_connection(connection)
+            print(f"Usuário {self.user_name} salvo no banco de dados.")
+
     def get_user_name(self):
         return self.user_name
 
@@ -90,24 +103,26 @@ class User():
         borrow_instance.returned_book(returned_books)
 
 # # Criar usuário
-user = User("Alice", "senha123", 25, "alice@example.com", "Rua piaui, 200", "555-1234", "12345", True)
+#         ###id, name, age, email, address, id_user, contact, ativo
+# user = User("4808", "Alice", 25, "alice@example.com", "Rua piaui, 200", "id_user", "555-1234", "True")
+# user.save_to_db()
 
-book = Book(isbn="978-3-16-148410-0", title="Dom Quixote", author="Miguel de Cervantes", year_of_publication=1605, num_of_editions=1, num_of_copies=10, num_of_pages=200)
-loan = Borrow("Ativo", "2024-05-20", "2024-06-20", "Alice", book)  # Suponha que você tenha uma instância válida de Book
+# book = Book(isbn="978-3-16-148410-0", title="Dom Quixote", author="Miguel de Cervantes", year_of_publication=1605, num_of_editions=1, num_of_copies=10, num_of_pages=200)
+# loan = Borrow("Ativo", "2024-05-20", "2024-06-20", "Alice", book)  # Suponha que você tenha uma instância válida de Book
 
-livros_devolvidos = ["Senhor dos Aneis", "Bras Cubas"]
-user.check_available(loan, book)
-user.reserve_book(loan, book)
-user.returned_book(loan, livros_devolvidos)
+# livros_devolvidos = ["Senhor dos Aneis", "Bras Cubas"]
+# user.check_available(loan, book)
+# user.reserve_book(loan, book)
+# user.returned_book(loan, livros_devolvidos)
 
 
-# Adicionar usuário
-new_user = User("Joana", "senha123", 25, "joana@example.com", "Rua camargo, 50", "555-1234", "12345", True)
-new_user.register(new_user)
+# # Adicionar usuário
+# new_user = User("Joana", "senha123", 25, "joana@example.com", "Rua camargo, 50", "555-1234", "12345", True)
+# new_user.register(new_user)
 
-# Login bem-sucedido
-user1 = User("fulano", "senha123", 25, "fulano@example.com", "Rua X, Cidade Y", 58478,"123456789", True)
-attempt_1 = user1.login("fulano", "senha123")  
+# # Login bem-sucedido
+# user1 = User("fulano", "senha123", 25, "fulano@example.com", "Rua X, Cidade Y", 58478,"123456789", True)
+# attempt_1 = user1.login("fulano", "senha123")  
 
- # Usuário ou senha incorretos
-attempt_2 = user1.login("fulano", "senha_errada")
+#  # Usuário ou senha incorretos
+# attempt_2 = user1.login("fulano", "senha_errada")

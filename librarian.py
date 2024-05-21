@@ -1,3 +1,4 @@
+from db import create_connection, close_connection
 from datetime import datetime
 from borrow import Borrow
 from user import User
@@ -6,7 +7,7 @@ from employee import Employee
 
 class Librarian(Employee):
   def __init__(self, name, _password, _age, _email, _address, _contact, id_librarian):
-    super().__init__(name, _password, _age, _email, _address, _contact)
+    super().__init__(name, _password, _age, _email, _address, _contact, "Librarian")
     self.id_librarian = id_librarian
     self.books = []
 
@@ -40,15 +41,15 @@ class Librarian(Employee):
 livro = Book('978-3-16-148410-0', "O Senhor dos Anéis", "J.R.R. Tolkien", "123456789", 10, 20, 1000)
 usuario = User("Alice", "senha123", 25, "alice@example.com", "123 Main Street", "555-1234", "12345", True)
 
-librarian = Librarian('Maria', 's12345', 22, 'van@gmail.com', 'Rua Pindaíba, 33', '11874259631', 'V2343')
-librarian.borrow_books(livro, usuario)
+# librarian = Librarian('Maria', 's12345', 22, 'van@gmail.com', 'Rua Pindaíba, 33', '11874259631', 'V2343')
+# librarian.borrow_books(livro, usuario)
 
 
-# Adiciona novos Livros 
-novos_livros = ['Livro B', 'Livro C']
-librarian._add_new_books(novos_livros)
+# # Adiciona novos Livros 
+# novos_livros = ['Livro B', 'Livro C']
+# librarian._add_new_books(novos_livros)
 
-print(librarian.get_books())
+# print(librarian.get_books())
 
-librarian._remove_books(novos_livros)
-print(librarian.get_books()) 
+# librarian._remove_books(novos_livros)
+# print(librarian.get_books()) 

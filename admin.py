@@ -1,10 +1,11 @@
 
+from db import create_connection, close_connection
 from user import User
 from employee import Employee
 
 class Adm(Employee):
     def __init__(self, name, _password, _age, _email, _address, _contact, id_admin):
-        super().__init__(name, _password, _age, _email, _address, _contact)
+        super().__init__(name, _password, _age, _email, _address, _contact, "Adm")
         self.id_admin = id_admin
         self.user = []
 

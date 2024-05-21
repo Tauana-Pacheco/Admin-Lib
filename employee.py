@@ -1,11 +1,24 @@
+from db import create_connection, close_connection
 class Employee:
-    def __init__(self, name, _password, _age, _email, _address, _contact):
+    def __init__(self, name, _password, _age, _email, _address, _contact, type_position):
         self.name = name
         self._password = _password
         self._age = _age
         self._email = _email
         self._address = _address
         self._contact = _contact
+        self.type = type_position
+    
+    def save_to_db(self):
+        connection = create_connection()
+        if connection: 
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO Book (name, age, email, adress, type) VALUES (?, ?, ? , ?, ?)",
+            (self.name, self._age, self._email, self._address, self._contact, self.type))
+            connection.commit()
+            cursor.close()
+            close_connection(connection)
+            print(f"Funcionário {self.name} salvo no banco de dados.")
     
     # Getters
     def get_name(self):

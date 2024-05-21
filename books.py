@@ -1,3 +1,4 @@
+from db import create_connection, close_connection
 class Book:
     def __init__(self, isbn, title, author, year_of_publication, num_of_editions, num_of_copies, num_of_pages):
         self.isbn = isbn
@@ -8,6 +9,14 @@ class Book:
         self.num_of_copies = num_of_copies
         self.num_of_pages = num_of_pages
         self.available = True
+
+    def save_to_db(self):
+        connection = create_connection()
+        if connection: 
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO Book (name, age, email, adress, type) VALUES (?, ?, ? , ?, ?)",
+            (sel))
+    pass
 
     # Getters
     def get_isbn(self):

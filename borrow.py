@@ -1,12 +1,12 @@
 from books import Book
 
 class Borrow: 
-    def __init__(self, status, start_date, end_date, id_user, book_name):
+    def __init__(self, status, start_date, end_date, id_user, id_book):
         self.status = status
         self.start_date = start_date
         self.end_date = end_date
         self.id_user = id_user
-        self.book_name = book_name
+        self.id_book = id_book
         self.borrowed_books = [] 
         self.reserved_books = []
         self.returned_books = []
