@@ -9,7 +9,7 @@ class User():
         self.email = email
         self.address = address
         self.contact = contact
-        self.matricula = id_user
+        self.id_user = id_user
         self.ativo = ativo
         self.loans = []
         self.users = []
@@ -46,13 +46,35 @@ class User():
 
     def register(self,users):
         self.users.append(users)
-     
+    
+    def revemo_user(self, users):
+        self.users.remove(users)
+    
+    def update_info(self, new_user_name=None, new_senha=None, new_idade=None, new_email=None,new_endereco=None, new_contato=None, new_id_user=None, new_status=None):
+        if new_user_name:
+            self.user_name = new_user_name
+        if new_senha:
+            self._password = new_senha
+        if new_idade is not None:
+            self.age = new_idade
+        if new_email:
+            self.email = new_email
+        if new_endereco:
+            self.address = new_endereco
+        if new_contato:
+            self.contact = new_contato
+        if new_id_user is not None:
+            self.id_user = new_id_user
+        if new_status is not None:
+            self.ativo = new_status
+        print(f"Informações do usuário {self.user_name} atualizadas com sucesso.")
+
     def login(self, user_name, password):
         if user_name == self.user_name and password == self._password:
             print("Login bem-sucedido.")
             return True
         else:
-            print("Usuário ou senha incorretos. Tente novamente.")
+            print("Usuário ou senha incorretos. Tente newmente.")
             return False
  
     # Reserva livro
