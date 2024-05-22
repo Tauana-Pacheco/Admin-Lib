@@ -33,13 +33,13 @@ class Adm(Employee):
             print(f"Erro: Usuário '{user.user_name}' não encontrado no sistema.")
 
 # # Criar instâncias de adm
-adm = Adm('Van', 's12345', 22, 'van@gmail.com', 'Rua Pindaíba, 33', '11874259631', 'V2343')
+# adm = Adm('Van', 's12345', 22, 'van@gmail.com', 'Rua Pindaíba, 33', '11874259631', 'V2343')
 
-# # Adiciona novo usuário
-new_user = User("novousuario", "novasenha", 25, "novousuario@example.com", "Endereço do Novo Usuário", "987654321", "USR003", ativo=True)
-adm._register_new_user(new_user)
+# # # Adiciona novo usuário
+# new_user = User("novousuario", "novasenha", 25, "novousuario@example.com", "Endereço do Novo Usuário", "987654321", "USR003", ativo=True)
+# adm._register_new_user(new_user)
 
-# Remove usuário
-adm._remove_user(new_user) 
+# # Remove usuário
+# adm._remove_user(new_user) 
                                                                                                                               
 

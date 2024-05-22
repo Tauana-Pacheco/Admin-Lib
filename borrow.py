@@ -1,4 +1,6 @@
-from books import Book
+from db import create_connection, close_connection
+# from books import DigitalBook
+# from user import User
 
 class Borrow: 
     def __init__(self, status, start_date, end_date, id_user, id_book):
@@ -11,6 +13,17 @@ class Borrow:
         self.reserved_books = []
         self.returned_books = []
         self.loads = []
+    
+    def save_to_db(self):
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor()
+            cursor.execute("INSERT INTO Borrow (status, start_date, end_date, id_user, id_book) VALUES (?, ?, ?, ?, ?)", 
+            (self.status, self.start_date, self.end_date, self.id_user, self.id_book))
+            connection.commit()
+            cursor.close()
+            close_connection(connection)
+            print(f"Emprestimo realizado para: {self.id_user}, livro {self.id_book} salvo no banco de dados.")
     
     # Getters
     def get_status(self):
@@ -74,4 +87,5 @@ class Borrow:
             else:
                 self.reserved_books.append(books)
                 print("Reserva realizada com sucesso.")
-    
+
+

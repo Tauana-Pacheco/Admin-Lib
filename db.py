@@ -42,8 +42,24 @@ def create_tables():
             num_of_copies INTEGER NOT NULL, 
             num_of_pages INTEGER NOT NULL,                                               
             available BOOLEAN DEFAULT TRUE,
-            type TEXT NOT NULL CHECK (type IN ('PhysicalBook', 'DigitalBook'))
+            type TEXT NOT NULL CHECK (type IN ('PhysicalBook', 'DigitalBook'))       
         );
+        ''')
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS PhysicalBook (
+            id INTEGER PRIMARY KEY,
+            cover_type TEXT NOT NULL,
+            weight REAL NOT NULL,
+            FOREIGN KEY (id) REFERENCES Book(id)
+        );
+        ''')
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS DigitalBook (
+            id INTEGER PRIMARY KEY,
+            file_size TEXT NOT NULL,
+            format TEXT NOT NULL,
+            FOREIGN KEY (id) REFERENCES Book(id)
+            );
         ''')
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS Borrow (
@@ -72,4 +88,37 @@ def create_tables():
         close_connection(connection)
         print("Tabelas criadas com sucesso.")
 
-# create_tables()
+def drop_table(table_name):
+    connection = create_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute(f"DROP TABLE IF EXISTS {table_name}")
+            connection.commit()
+            cursor.close()
+            print(f"Tabela {table_name} deletada com sucesso.")
+        except Error as e:
+            print(f"Erro ao deletar a tabela {table_name}: {e}")
+        finally:
+            close_connection(connection)
+
+def delete_table(table_name):
+    connection = create_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute(f"DELETE FROM {table_name}")
+            connection.commit()
+            cursor.close()
+            print(f"Tabela {table_name} deletada com sucesso.")
+        except Error as e:
+            print(f"Erro ao deletar a tabela {table_name}: {e}")
+        finally:
+            close_connection(connection)
+
+
+
+#create_tables()
+# drop_table('Book')
+# drop_table('PhysicalBook')
+# drop_table('DigitalBook')

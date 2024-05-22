@@ -102,10 +102,6 @@ class User():
     def returned_book(self, borrow_instance, returned_books):
         borrow_instance.returned_book(returned_books)
 
-# # Criar usuário
-#         ###id, name, age, email, address, id_user, contact, ativo
-# user = User("4808", "Alice", 25, "alice@example.com", "Rua piaui, 200", "id_user", "555-1234", "True")
-# user.save_to_db()
 
 # book = Book(isbn="978-3-16-148410-0", title="Dom Quixote", author="Miguel de Cervantes", year_of_publication=1605, num_of_editions=1, num_of_copies=10, num_of_pages=200)
 # loan = Borrow("Ativo", "2024-05-20", "2024-06-20", "Alice", book)  # Suponha que você tenha uma instância válida de Book
