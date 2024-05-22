@@ -36,15 +36,13 @@ class Adm(Employee):
         if connection:
             try:
                 cursor = connection.cursor()
-                # Salva dados do administrador
                 cursor.execute("INSERT INTO Admin (id_admin) VALUES (?)", (self.id_admin,))
                 
-                # Salva dados dos usuários
                 for user in self.user:
                     cursor.execute("INSERT INTO User (name, age, email, address, id_user, contact, ativo) VALUES (?, ?, ?, ?, ?, ?, ?)", 
                                 (user.user_name, user.age, user.email, user.address, user.id_user, user.contact, user.ativo))
                     
-                connection.commit()  # Commit após o loop, quando todas as inserções foram concluídas
+                connection.commit()  
                 print("Dados do administrador e dos usuários foram salvos no banco de dados.")
             except Error as e:
                 print(f"Erro ao salvar dados no banco de dados: {e}")

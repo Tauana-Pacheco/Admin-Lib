@@ -15,7 +15,6 @@ class Librarian(Employee):
      return self.books
 
   # Empresta livro
-  ##### talvez retirar
   def borrow_books(self, books, user):
     if books.available == False:
       print(f"O books '{books.title}' não está disponível para empréstimo.")
@@ -36,20 +35,5 @@ class Librarian(Employee):
   def _remove_books(self, books):
      for book in books:
           self.books.remove(book)
-  
-# #  id, isbn, title, author, year_of_publication, num_of_editions, num_of_copies, num_of_pages
-# livro = Book('978-3-16-148410-0', "O Senhor dos Anéis", "J.R.R. Tolkien", "123456789", 10, 20, 1000)
-# usuario = User("Alice", "senha123", 25, "alice@example.com", "123 Main Street", "555-1234", "12345", True)
-
-# librarian = Librarian('Maria', 's12345', 22, 'van@gmail.com', 'Rua Pindaíba, 33', '11874259631', 'V2343')
-# librarian.borrow_books(livro, usuario)
-
-
-# # Adiciona novos Livros 
-# novos_livros = ['Livro B', 'Livro C']
-# librarian._add_new_books(novos_livros)
-
-# print(librarian.get_books())
-
-# librarian._remove_books(novos_livros)
-# print(librarian.get_books()) 
+      
+  #  v2_ add busca

@@ -1,7 +1,4 @@
 from db import create_connection, close_connection
-# from books import DigitalBook
-# from user import User
-
 class Borrow: 
     def __init__(self, status, start_date, end_date, id_user, id_book):
         self.status = status
@@ -72,25 +69,6 @@ class Borrow:
             cursor.close()
             close_connection(connection)
 
-    # def returned_book(self, book):
-    #     connection = create_connection()
-    #     if connection:
-    #         cursor = connection.cursor()
-    #         cursor.execute("SELECT available FROM Book WHERE id = ?", (book.id,))
-    #         book_available = cursor.fetchone()
-    #         if not book_available:
-    #             cursor.execute("UPDATE Book SET available = TRUE WHERE id = ?", (book.id,))
-    #             cursor.execute("DELETE FROM Borrow WHERE id_book = ?", (book.id,))
-    #             if book.id in self.borrowed_books:
-    #                 self.borrowed_books.remove(self.id_book)
-    #                 self.returned_books.append(book.id)
-    #                 print(f"O livro '{book.id}' foi devolvido com sucesso.")
-    #             else:
-    #                 print(f"Erro: o livro '{book.id}' não está na lista de livros emprestados.")
-    #         else:
-    #             print(f"O livro '{book.id}' não está emprestado pelo usuário.")
-    #         cursor.close()
-    #         close_connection(connection)
     def returned_book(self, book):
         connection = create_connection()
         if connection:

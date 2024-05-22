@@ -159,5 +159,3 @@ def update_row(table_name, values, condition):
             print(f"Erro ao atualizar uma linha da tabela {table_name}: {e}")
         finally:
             close_connection(connection)
-
-# create_tables()

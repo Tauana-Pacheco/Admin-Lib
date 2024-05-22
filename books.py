@@ -112,9 +112,7 @@ class PhysicalBook(Book):
         connection = create_connection()
         if connection:
             cursor = connection.cursor()
-            book_id = cursor.lastrowid  # Obter o ID gerado automaticamente
-            
-            # Inserir dados na tabela PhysicalBook
+            book_id = cursor.lastrowid  
             cursor.execute("INSERT INTO PhysicalBook (id, cover_type, weight) VALUES (?, ?, ?)",
                         (book_id, self.cover_type, self.weight))
             
@@ -129,7 +127,6 @@ class PhysicalBook(Book):
         if connection:
             cursor = connection.cursor()
 
-            # Atualizar dados na tabela PhysicalBook
             cursor.execute("UPDATE PhysicalBook SET cover_type = ?, weight = ? WHERE id = ?",
                             (self.cover_type, self.weight, self.id))
 
@@ -168,8 +165,7 @@ class DigitalBook(Book):
         connection = create_connection()
         if connection:
             cursor = connection.cursor()
-            
-            # Inserir dados na tabela DigitalBook
+          
             cursor.execute("INSERT INTO DigitalBook (id, file_size, format) VALUES (?, ?, ?)",
                         (self.id, self.file_size, self.format))
             
@@ -185,10 +181,8 @@ class DigitalBook(Book):
         if connection:
             cursor = connection.cursor()
 
-            # Atualizar dados na tabela DigitalBook
             cursor.execute("UPDATE DigitalBook SET file_size = ?, format = ? WHERE id = ?",
                             (self.file_size, self.format, self.id))
-
             connection.commit()
             cursor.close()
             close_connection(connection)
