@@ -57,35 +57,95 @@ class Borrow:
     def set_id_book(self, id_book):
         self.id_book = id_book
     
-    # Verifica disponibilidade do livro
-    def check_available(self, books):
-        if books in self.borrowed_books:
-            print("O livro está indisponível no momento.")
-        elif books in self.reserved_books:
-            print("O livro já está reservado por você.")
-        else:
-            print("O livro está disponível para empréstimo.")
-    
-    # Devolve Livro
-    def returned_book(self, returned_books):
-        for book in returned_books:
-            if book in self.borrowed_books:
-                self.borrowed_books.remove(book)
-                print(f"O livro '{book}' foi devolvido com sucesso.")
-            else:
-                print(f"O livro '{book}' não está emprestado pelo usuário.")
-
-    # Reserva livro
-    def reserve_book(self, books):
-        if books in self.borrowed_books:
-            print("O livro está indisponível no momento.")
-        elif books in self.reserved_books:
-            print("O livro já está reservado por você.")
-        else:
-            if self.status == 'INDISPONÍVEL':
+    def check_available(self, book):
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT available FROM Book WHERE id = ?", (book.id,))
+            book_available = cursor.fetchone()
+            if not book_available:
                 print("O livro está indisponível no momento.")
+            elif book.id in self.reserved_books:
+                print("O livro já está reservado por você.")
             else:
-                self.reserved_books.append(books)
-                print("Reserva realizada com sucesso.")
+                print("O livro está disponível para empréstimo.")
+            cursor.close()
+            close_connection(connection)
 
+    # def returned_book(self, book):
+    #     connection = create_connection()
+    #     if connection:
+    #         cursor = connection.cursor()
+    #         cursor.execute("SELECT available FROM Book WHERE id = ?", (book.id,))
+    #         book_available = cursor.fetchone()
+    #         if not book_available:
+    #             cursor.execute("UPDATE Book SET available = TRUE WHERE id = ?", (book.id,))
+    #             cursor.execute("DELETE FROM Borrow WHERE id_book = ?", (book.id,))
+    #             if book.id in self.borrowed_books:
+    #                 self.borrowed_books.remove(self.id_book)
+    #                 self.returned_books.append(book.id)
+    #                 print(f"O livro '{book.id}' foi devolvido com sucesso.")
+    #             else:
+    #                 print(f"Erro: o livro '{book.id}' não está na lista de livros emprestados.")
+    #         else:
+    #             print(f"O livro '{book.id}' não está emprestado pelo usuário.")
+    #         cursor.close()
+    #         close_connection(connection)
+    def returned_book(self, book):
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT available FROM Book WHERE id = ?", (book.id,))
+            result = cursor.fetchone()
+            if result is not None:
+                book_available = result[0]
+                if not book_available:
+                    cursor.execute("UPDATE Book SET available = TRUE WHERE id = ?", (book.id,))
+                    cursor.execute("DELETE FROM Borrow WHERE id_book = ?", (book.id,))
+                    connection.commit()
+                    if book.id in self.borrowed_books:
+                        self.borrowed_books.remove(book.id)
+                        self.returned_books.append(book.id)
+                        print(f"O livro '{book.id}' foi devolvido com sucesso.")
+                    else:
+                        print(f"Erro: o livro '{book.id}' não está na lista de livros emprestados.")
+                else:
+                    print(f"O livro '{book.id}' não está emprestado pelo usuário.")
+            else:
+                print("Livro não encontrado.")
+            cursor.close()
+            close_connection(connection)
+
+    def reserve_book(self, book):
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor()
+            cursor.execute("SELECT available FROM Book WHERE id = ?", (book.id,))
+            result = cursor.fetchone()
+            if result:
+                book_available = result[0]
+                if not book_available:
+                    print("O livro está indisponível no momento.")
+                elif book.id in self.reserved_books:
+                    print("O livro já está reservado por você.")
+                else:
+                    cursor.execute("SELECT available FROM User WHERE id = ?", (self.id_user,))
+                    user_result = cursor.fetchone()
+                    if user_result:
+                        user_available = user_result[0]
+                        if not user_available:
+                            print("O usuário não pode reservar livros no momento.")
+                        else:
+                            cursor.execute("UPDATE Book SET available = FALSE WHERE id = ?", (book.id,))
+                            cursor.execute("INSERT INTO Borrow (status, start_date, end_date, id_user, id_book) VALUES (?, ?, ?, ?, ?)",
+                                           ('RESERVADO', self.start_date, self.end_date, self.id_user, book.id))
+                            connection.commit()
+                            self.reserved_books.append(book.id)
+                            print("Reserva realizada com sucesso.")
+                    else:
+                        print("Usuário não encontrado.")
+            else:
+                print("Livro não encontrado.")
+            cursor.close()
+            close_connection(connection)
 

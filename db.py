@@ -80,8 +80,23 @@ def create_tables():
             age INTEGER,
             email TEXT NOT NULL,
             address TEXT NOT NULL,
-            type TEXT NOT NULL CHECK (type IN ('Adm', 'Librarian'))
+            contact TEXT NOT NULL,
+            type TEXT NOT NULL CHECK (type IN ('Administradora', 'Biliotecaria'))
         );
+        ''')
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Admin (
+            id INTEGER PRIMARY KEY,
+            id_admin  TEXT NOT NULL,
+            FOREIGN KEY (id) REFERENCES Employee(id)
+            );
+        ''')
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Bibliotecaria (
+            id INTEGER PRIMARY KEY,
+            id_librarian TEXT NOT NULL,               
+            FOREIGN KEY (id) REFERENCES Employee(id)
+            );
         ''')
         connection.commit()
         cursor.close()
@@ -107,7 +122,7 @@ def delete_table(table_name):
     if connection:
         try:
             cursor = connection.cursor()
-            cursor.execute(f"DELETE FROM {table_name}")
+            cursor.execute(f"DELETE FROM {table_name} ")
             connection.commit()
             cursor.close()
             print(f"Tabela {table_name} deletada com sucesso.")
@@ -116,9 +131,33 @@ def delete_table(table_name):
         finally:
             close_connection(connection)
 
+def delete_row(table_name, condition):
+    connection = create_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            cursor.execute(f"DELETE FROM {table_name} WHERE {condition}")
+            connection.commit()
+            cursor.close()
+            print(f"Uma linha da tabela {table_name} foi deletada com sucesso.")
+        except Error as e:
+            print(f"Erro ao deletar uma linha da tabela {table_name}: {e}")
+        finally:
+            close_connection(connection)
 
+def update_row(table_name, values, condition):
+    connection = create_connection()
+    if connection:
+        try:
+            cursor = connection.cursor()
+            set_values = ", ".join([f"{key} = '{value}'" for key, value in values.items()])
+            cursor.execute(f"UPDATE {table_name} SET {set_values} WHERE {condition}")
+            connection.commit()
+            cursor.close()
+            print(f"Uma linha da tabela {table_name} foi atualizada com sucesso.")
+        except Error as e:
+            print(f"Erro ao atualizar uma linha da tabela {table_name}: {e}")
+        finally:
+            close_connection(connection)
 
-#create_tables()
-# drop_table('Book')
-# drop_table('PhysicalBook')
-# drop_table('DigitalBook')
+# create_tables()

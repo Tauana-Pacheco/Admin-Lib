@@ -99,6 +99,7 @@ class User():
         borrow_instance.check_available(book)
     
     # Devolver o livro
+    ### futuro
     def returned_book(self, borrow_instance, returned_books):
         borrow_instance.returned_book(returned_books)
 

@@ -13,7 +13,7 @@ class Employee:
         connection = create_connection()
         if connection: 
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO Book (name, age, email, adress, type) VALUES (?, ?, ? , ?, ?)",
+            cursor.execute("INSERT INTO Employee (name, age, email, address, contact, type) VALUES (?, ?, ?, ?, ?, ?)",
             (self.name, self._age, self._email, self._address, self._contact, self.type))
             connection.commit()
             cursor.close()

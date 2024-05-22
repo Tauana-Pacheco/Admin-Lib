@@ -7,7 +7,7 @@ from employee import Employee
 
 class Librarian(Employee):
   def __init__(self, name, _password, _age, _email, _address, _contact, id_librarian):
-    super().__init__(name, _password, _age, _email, _address, _contact, "Librarian")
+    super().__init__(name, _password, _age, _email, _address, _contact, "Biliotecaria")
     self.id_librarian = id_librarian
     self.books = []
 
@@ -37,9 +37,9 @@ class Librarian(Employee):
      for book in books:
           self.books.remove(book)
   
-#  id, isbn, title, author, year_of_publication, num_of_editions, num_of_copies, num_of_pages
-livro = Book('978-3-16-148410-0', "O Senhor dos Anéis", "J.R.R. Tolkien", "123456789", 10, 20, 1000)
-usuario = User("Alice", "senha123", 25, "alice@example.com", "123 Main Street", "555-1234", "12345", True)
+# #  id, isbn, title, author, year_of_publication, num_of_editions, num_of_copies, num_of_pages
+# livro = Book('978-3-16-148410-0', "O Senhor dos Anéis", "J.R.R. Tolkien", "123456789", 10, 20, 1000)
+# usuario = User("Alice", "senha123", 25, "alice@example.com", "123 Main Street", "555-1234", "12345", True)
 
 # librarian = Librarian('Maria', 's12345', 22, 'van@gmail.com', 'Rua Pindaíba, 33', '11874259631', 'V2343')
 # librarian.borrow_books(livro, usuario)

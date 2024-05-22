@@ -1,45 +1,56 @@
 
+from sqlite3 import Error
 from db import create_connection, close_connection
 from user import User
 from employee import Employee
 
 class Adm(Employee):
     def __init__(self, name, _password, _age, _email, _address, _contact, id_admin):
-        super().__init__(name, _password, _age, _email, _address, _contact, "Adm")
+        super().__init__(name, _password, _age, _email, _address, _contact, "Administradora")
         self.id_admin = id_admin
         self.user = []
 
-    # Cadastra novo usuário
     def _register_new_user(self, user):
         self.user.append(user)
         print(f"Usuário '{user.user_name}' registrado na biblioteca.")   
     
-    # remove usuario do sistema   
     def _remove_user(self, user):
-        if len(self.user) == 0:
-            print(f"Erro: Não há usuários registrados no sistema.")
+        if not self.user:
+            print("Erro: Não há usuários registrados no sistema.")
             return
         
-        user_to_remove = None
-        for user in self.user:
-            if user.user_name == user.user_name:
-                user_to_remove = user
+        removed = False
+        for stored_user in self.user:
+            if stored_user.id == user.id:
+                self.user.remove(stored_user)
+                removed = True
+                print(f"Usuário '{user.user_name}' foi removido do sistema.")
                 break
         
-        if user_to_remove:
-            self.user.remove(user_to_remove)
-            print(f"Usuário '{user.user_name}' foi removido do sistema.")
-        else:
+        if not removed:
             print(f"Erro: Usuário '{user.user_name}' não encontrado no sistema.")
 
-# # Criar instâncias de adm
-# adm = Adm('Van', 's12345', 22, 'van@gmail.com', 'Rua Pindaíba, 33', '11874259631', 'V2343')
+    def save_to_database(self):
+        super().save_to_db()
+        connection = create_connection()
+        if connection:
+            try:
+                cursor = connection.cursor()
+                # Salva dados do administrador
+                cursor.execute("INSERT INTO Admin (id_admin) VALUES (?)", (self.id_admin,))
+                
+                # Salva dados dos usuários
+                for user in self.user:
+                    cursor.execute("INSERT INTO User (name, age, email, address, id_user, contact, ativo) VALUES (?, ?, ?, ?, ?, ?, ?)", 
+                                (user.user_name, user.age, user.email, user.address, user.id_user, user.contact, user.ativo))
+                    
+                connection.commit()  # Commit após o loop, quando todas as inserções foram concluídas
+                print("Dados do administrador e dos usuários foram salvos no banco de dados.")
+            except Error as e:
+                print(f"Erro ao salvar dados no banco de dados: {e}")
+            finally:
+                cursor.close()
+                close_connection(connection)
 
-# # # Adiciona novo usuário
-# new_user = User("novousuario", "novasenha", 25, "novousuario@example.com", "Endereço do Novo Usuário", "987654321", "USR003", ativo=True)
-# adm._register_new_user(new_user)
-
-# # Remove usuário
-# adm._remove_user(new_user) 
                                                                                                                               
 
