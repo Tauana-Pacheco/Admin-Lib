@@ -1,9 +1,7 @@
 from db import create_connection, close_connection
-from books import Book
-from borrow import Borrow
 
-class User():
-    def __init__(self, id, user_name, _password,  age, email, address, id_user,  contact, ativo):
+class User:
+    def __init__(self, id, user_name, _password, age, email, address, id_user, contact, ativo):
         self.id = id
         self.user_name = user_name
         self._password = _password
@@ -20,8 +18,10 @@ class User():
         connection = create_connection()
         if connection:
             cursor = connection.cursor()
-            cursor.execute("INSERT INTO User (name, age, email, address, id_user, contact, ativo) VALUES (?, ?, ?, ?, ?, ?, ?)", 
-            (self.user_name, self.age, self.email, self.address, self.id_user, self.contact, self.ativo))
+            cursor.execute(
+                "INSERT INTO User (name, age, email, address, id_user, contact, ativo) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                (self.user_name,  self.age, self.email, self.address, self.id_user, self.contact, self.ativo)
+            )
             connection.commit()
             cursor.close()
             close_connection(connection)
@@ -50,32 +50,32 @@ class User():
 
     def set_password(self, password):
         self._password = password
-    
+
     def set_address(self, address):
         self.address = address
 
     def set_id_user(self, id_user):
-        self.id_user = id_user    
+        self.id_user = id_user
 
-    def register(self,users):
+    def register(self, users):
         self.users.append(users)
-    
-    def revemo_user(self, users):
+
+    def remove_user(self, users):
         self.users.remove(users)
-    
-    def update_info(self, new_user_name=None, new_senha=None, new_idade=None, new_email=None,new_endereco=None, new_contato=None, new_id_user=None, new_status=None):
+
+    def update_info(self, new_user_name=None, new_password=None, new_age=None, new_email=None, new_address=None, new_contact=None, new_id_user=None, new_status=None):
         if new_user_name:
             self.user_name = new_user_name
-        if new_senha:
-            self._password = new_senha
-        if new_idade is not None:
-            self.age = new_idade
+        if new_password:
+            self._password = new_password
+        if new_age is not None:
+            self.age = new_age
         if new_email:
             self.email = new_email
-        if new_endereco:
-            self.address = new_endereco
-        if new_contato:
-            self.contact = new_contato
+        if new_address:
+            self.address = new_address
+        if new_contact:
+            self.contact = new_contact
         if new_id_user is not None:
             self.id_user = new_id_user
         if new_status is not None:
@@ -87,39 +87,67 @@ class User():
             print("Login bem-sucedido.")
             return True
         else:
-            print("Usuário ou senha incorretos. Tente newmente.")
+            print("Usuário ou senha incorretos. Tente novamente.")
             return False
- 
-    # Reserva livro
+
     def reserve_book(self, borrow_instance, book):
         borrow_instance.reserve_book(book)
 
-    # Verifica disponibilidade do livro
     def check_available(self, borrow_instance, book):
         borrow_instance.check_available(book)
-    
-    # Devolver o livro
-    ### futuro
+
     def returned_book(self, borrow_instance, returned_books):
         borrow_instance.returned_book(returned_books)
 
 
-# book = Book(isbn="978-3-16-148410-0", title="Dom Quixote", author="Miguel de Cervantes", year_of_publication=1605, num_of_editions=1, num_of_copies=10, num_of_pages=200)
-# loan = Borrow("Ativo", "2024-05-20", "2024-06-20", "Alice", book)  # Suponha que você tenha uma instância válida de Book
+def main():
+    while True:
+        print("\n1. Criar usuário\n2. Atualizar usuário\n3. Login\n4. Sair")
+        choice = input("Escolha uma opção: ")
 
-# livros_devolvidos = ["Senhor dos Aneis", "Bras Cubas"]
-# user.check_available(loan, book)
-# user.reserve_book(loan, book)
-# user.returned_book(loan, livros_devolvidos)
+        if choice == '1':
+            id = input("ID: ")
+            user_name = input("Nome de usuário: ")
+            password = input("Senha: ")
+            age = int(input("Idade: "))
+            email = input("Email: ")
+            address = input("Endereço: ")
+            id_user = input("ID do usuário: ")
+            contact = input("Contato: ")
+            ativo = input("Ativo (1 para sim, 0 para não): ")
 
+            user = User(id, user_name, password, age, email, address, id_user, contact, ativo)
+            user.save_to_db()
 
-# # Adicionar usuário
-# new_user = User("Joana", "senha123", 25, "joana@example.com", "Rua camargo, 50", "555-1234", "12345", True)
-# new_user.register(new_user)
+        elif choice == '2':
+            id = input("ID do usuário a ser atualizado: ")
+            user_name = input("Novo nome de usuário (deixe em branco para não alterar): ")
+            password = input("Nova senha (deixe em branco para não alterar): ")
+            age = input("Nova idade (deixe em branco para não alterar): ")
+            email = input("Novo email (deixe em branco para não alterar): ")
+            address = input("Novo endereço (deixe em branco para não alterar): ")
+            id_user = input("Novo ID do usuário (deixe em branco para não alterar): ")
+            contact = input("Novo contato (deixe em branco para não alterar): ")
+            ativo = input("Novo status (1 para sim, 0 para não, deixe em branco para não alterar): ")
 
-# # Login bem-sucedido
-# user1 = User("fulano", "senha123", 25, "fulano@example.com", "Rua X, Cidade Y", 58478,"123456789", True)
-# attempt_1 = user1.login("fulano", "senha123")  
+            user = User(id, user_name, password, int(age) if age else None, email, address, id_user, contact, int(ativo) if ativo else None)
+            user.update_info(new_user_name=user_name, new_password=password, new_age=int(age) if age else None,
+                             new_email=email, new_address=address, new_contact=contact,
+                             new_id_user=id_user if id_user else None, new_status=int(ativo) if ativo else None)
+        
+        elif choice == '3':
+            user_name = input("Nome de usuário: ")
+            password = input("Senha: ")
+            
+            user = User(None, user_name, password, None, None, None, None, None, None)
+            user.login(user_name, password)
+        
+        elif choice == '4':
+            print("Saindo...")
+            break
+        
+        else:
+            print("Opção inválida. Tente novamente.")
 
-#  # Usuário ou senha incorretos
-# attempt_2 = user1.login("fulano", "senha_errada")
+if __name__ == "__main__":
+    main()

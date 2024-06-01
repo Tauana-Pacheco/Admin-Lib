@@ -42,7 +42,7 @@ def create_tables():
             num_of_copies INTEGER NOT NULL, 
             num_of_pages INTEGER NOT NULL,                                               
             available BOOLEAN DEFAULT TRUE,
-            type TEXT NOT NULL CHECK (type IN ('PhysicalBook', 'DigitalBook'))       
+            type_book TEXT NOT NULL CHECK (type_book IN ('PhysicalBook', 'DigitalBook'))       
         );
         ''')
         cursor.execute('''
@@ -159,3 +159,5 @@ def update_row(table_name, values, condition):
             print(f"Erro ao atualizar uma linha da tabela {table_name}: {e}")
         finally:
             close_connection(connection)
+
+create_tables()
