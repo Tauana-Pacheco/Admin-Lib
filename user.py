@@ -1,4 +1,5 @@
 from db import create_connection, close_connection
+from sqlite3 import Error
 
 class User:
     def __init__(self, id, user_name, _password, age, email, address, id_user, contact, ativo):
@@ -59,9 +60,30 @@ class User:
 
     def register(self, users):
         self.users.append(users)
+    
+    def remove_user(self):
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor()
+            try:
+                sql_command_remove = "DELETE FROM User WHERE id_user = ?"
+                cursor.execute(sql_command_remove, (self.id_user,))
+                connection.commit()
+                print(f"Usuário com ID {self.id_user} removido do banco de dados.")
+            except Error as e:
+                print(f"Erro ao remover usuário do banco de dados: {e}")
+            finally:
+                cursor.close()
+                close_connection(connection)
 
-    def remove_user(self, users):
-        self.users.remove(users)
+
+    @staticmethod
+    def remove_user_from_list(users, user):
+        if user in users:
+            users.remove(user)
+            print(f"Usuário {user.user_name} removido da lista.")
+        else:
+            print(f"Usuário {user.user_name} não encontrado na lista.")
 
     def update_info(self, new_user_name=None, new_password=None, new_age=None, new_email=None, new_address=None, new_contact=None, new_id_user=None, new_status=None):
         if new_user_name:
