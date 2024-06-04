@@ -8,9 +8,7 @@ def interactive_cli():
         print("\nBem-vindo!")
         print("Você é um usuário ou um funcionário?")
         print("1. Usuário")
-        print("2. Funcionário")
-        print("3. Emprestimo")
-        print("4. Livros")
+        print("2. Funcionário")       
         print("3. Sair")
 
         role_choice = input("Digite o número da opção: ")
@@ -19,14 +17,28 @@ def interactive_cli():
             user_menu()
 
         elif role_choice == '2':
-            employee_menu()
-        
-        elif role_choice == '3':
-            borrow_menu()
+            print("Bem vindo ao sistema de funcionários!")
+            print("1. Consultar emprestimos")
+            print("2. Serviço de Livros")
+            print("3. Voltar")
 
-        elif role_choice == '4':
-            book_menu()
+            employee_choice = input("Digite o número da opção: ")
 
+            if employee_choice == '1':
+                borrow_menu()
+            
+            elif employee_choice == '2':
+                book_menu()
+            
+            elif employee_choice == '3':
+                break
+
+            else:
+                print("Opção inválida, tente novamente.")
+                
+        elif role_choice == '7':
+            pass # employee_menu()
+     
         elif role_choice == '5':
             print("Saindo...")
             break
@@ -36,7 +48,7 @@ def interactive_cli():
 
 def user_menu():
     while True:
-        print("\n1. Criar usuário\n2. Atualizar usuário\n3. Login\n4. Sair")
+        print("\n1. Fazer Cadastro\n2. Atualizar usuário\n3. Login\n4. Sair")
         choice = input("Escolha uma opção: ")
 
         if choice == '1':
@@ -84,7 +96,6 @@ def user_menu():
             print("Opção inválida. Tente novamente.")
 
 def employee_menu():
-    print("Bem vindo ao sistema de funcionários!")
     while True:
         print("\nMenu:")
         print("1. Registrar funcionário") # ok
@@ -226,7 +237,7 @@ def borrow_menu():
             print("Opção inválida, tente novamente.")
 
 def book_menu():
-    print("Livros")
+    print("Bem-vindo ao serviço de livros")
     while True:
         print("\nMenu:")
         print("1. Adicionar livro")
