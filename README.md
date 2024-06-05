@@ -1,14 +1,6 @@
 # Documentação do Sistema
 
-## Estrutura de Arquivos
-.
-├── cli.py
-├── db.py
-├── library.db
-├── user.py
-├── employee.py
-├── books.py
-└── borrow.py
+![Estrutura de Arquivos](./structe.jpeg)
 
 ### Arquivos Python
 
