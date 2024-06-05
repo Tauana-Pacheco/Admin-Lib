@@ -39,7 +39,7 @@ class Employee:
                 close_connection(connection)
             
     @staticmethod
-    def load_from_db(admin_id):
+    def load_from_db_admin(admin_id):
         connection = create_connection()
         if connection:
             cursor = connection.cursor()
@@ -58,6 +58,28 @@ class Employee:
             finally:
                 cursor.close()
                 close_connection(connection)
+    
+    @staticmethod
+    def load_from_db_librarin(librarian_id):
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor()
+            try:
+                sql_command = "SELECT * FROM Employee JOIN Bibliotecaria ON Employee.id = Bibliotecaria.id WHERE Bibliotecaria.id_librarian = ?"
+                cursor.execute(sql_command, (librarian_id,))
+                row = cursor.fetchone()
+                if row:
+                    return Librarian(row[1], row[2], row[3], row[4], row[5], row[6], row[0])
+                else:
+                    print(f"Bibliotecario com id: {librarian_id} não foi encontrado.")
+                    return None
+            except Error as e:
+                print(f"Erro ao carregar bibliotecario do banco de dados: {e}")
+                return None
+            finally:
+                cursor.close()
+                close_connection(connection)
+
     # Getters
     def get_name(self):
         return self.name

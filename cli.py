@@ -1,20 +1,24 @@
+import sys
 from books import Book, DigitalBook, PhysicalBook
 from borrow import Borrow
-from user import User
 from employee import Librarian, Admin
+from user import User
 
 def interactive_cli():
     while True:
-        print("\nBem-vindo!")
-        print("Você é um usuário ou um funcionário?")
+        print("\n\033[1m Bem-vindo ao sistema bibliotecário!\033[m")
         print("1. Usuário")
-        print("2. Funcionário")       
-        print("3. Sair")
+        print("2. Para todos") 
+        print("3. Somente para funcionários")      
+        print("5. Fechar sistema")
 
         role_choice = input("Digite o número da opção: ")
 
         if role_choice == '1':
             user_menu()
+
+        if role_choice == '3':
+            employee_menu()
 
         elif role_choice == '2':
             print("Bem vindo ao sistema de funcionários!")
@@ -29,30 +33,29 @@ def interactive_cli():
             
             elif employee_choice == '2':
                 book_menu()
-            
-            elif employee_choice == '3':
-                break
 
             else:
                 print("Opção inválida, tente novamente.")
-                
-        elif role_choice == '7':
-            pass # employee_menu()
      
         elif role_choice == '5':
-            print("Saindo...")
-            break
+           exit_program()
 
         else:
             print("Opção inválida, tente novamente.")
 
 def user_menu():
     while True:
-        print("\n1. Fazer Cadastro\n2. Atualizar usuário\n3. Login\n4. Sair")
+        print("\n1. Login\n2. Fazer Cadastro\n3. Atualizar cadastro\n4. Fazer empréstimo\n5. Sair")
         choice = input("Escolha uma opção: ")
 
         if choice == '1':
-            id = input("ID: ")
+            user_name = input("Nome de usuário: ")
+            password = input("Senha: ")
+            
+            user = User(user_name, password, None, None, None, None, None, None)
+            user.login(user_name, password)
+
+        elif choice == '2':
             user_name = input("Nome de usuário: ")
             password = input("Senha: ")
             age = int(input("Idade: "))
@@ -62,33 +65,45 @@ def user_menu():
             contact = input("Contato: ")
             ativo = input("Ativo (1 para sim, 0 para não): ")
 
-            user = User(id, user_name, password, age, email, address, id_user, contact, ativo)
+            user = User(user_name, password, age, email, address, id_user, contact, ativo)
             user.save_to_db()
-
-        elif choice == '2':
-            id = input("ID do usuário a ser atualizado: ")
-            user_name = input("Novo nome de usuário (deixe em branco para não alterar): ")
-            password = input("Nova senha (deixe em branco para não alterar): ")
-            age = input("Nova idade (deixe em branco para não alterar): ")
-            email = input("Novo email (deixe em branco para não alterar): ")
-            address = input("Novo endereço (deixe em branco para não alterar): ")
-            id_user = input("Novo ID do usuário (deixe em branco para não alterar): ")
-            contact = input("Novo contato (deixe em branco para não alterar): ")
-            ativo = input("Novo status (1 para sim, 0 para não, deixe em branco para não alterar): ")
-
-            user = User(id, user_name, password, int(age) if age else None, email, address, id_user, contact, int(ativo) if ativo else None)
-            user.update_info(new_user_name=user_name, new_password=password, new_age=int(age) if age else None,
-                             new_email=email, new_address=address, new_contact=contact,
-                             new_id_user=id_user if id_user else None, new_status=int(ativo) if ativo else None)
-        
+   
         elif choice == '3':
             user_name = input("Nome de usuário: ")
             password = input("Senha: ")
             
-            user = User(None, user_name, password, None, None, None, None, None, None)
+            user = User(user_name, password, None, None, None, None, None, None)
             user.login(user_name, password)
+            email = None
+            address = None
+            contact = None
+            age = None
+            id_user = None
+            ativo = None
+            user_name = input('Qual seu nome: ')
+            if user_name == user.user_name:
+                print('Qual dado você quer alterar? ')
+                print("\n1. Nome de usuário:\n2. Senha:\n3. Idade:\n4. Email\n5. Endereço\n6. Contato.")
+                options_choice = input("Digite o número da opção: ")
+                if options_choice == '1':
+                    user_name = input("Novo nome de usuário: ")
+                if options_choice == '2':
+                    password = input("Nova senha: ")
+                if options_choice == '3':
+                    age = input("Nova idade: ")      
+                if options_choice == '4':     
+                    email = input("Novo email: ")
+                if options_choice == '5':
+                     address = input("Novo endereço: ")
+                if options_choice == '6':   
+                    contact = input("Novo contato: ")
+                user = User(user_name, password, int(age) if age else None, email, address, None, contact,None)
+            
+                user.update_info(new_user_name=user_name, new_password=password, new_age=int(age) if age else None,
+                                new_email=email, new_address=address, new_contact=contact,
+                                new_id_user=id_user if id_user else None, new_status=int(ativo) if ativo else None)        
         
-        elif choice == '4':
+        elif choice == '5':
             print("Saindo...")
             break
         
@@ -99,13 +114,14 @@ def employee_menu():
     while True:
         print("\nMenu:")
         print("1. Registrar funcionário") # ok
-        print("2. Registar usuário") # ok 
+        print("2. Registar usuário") # ajustar 
         print("3. Remover usuário") # ajustar
-        print("4. Visualizar livros disponíveis") # ok
-        print("5. Emprestar livro") # ok
-        print("6. Sair")
+        print("4. Sistema de Livros" )
+        print("5. Sistema de Emprestimo")
+        # print("6. Visualizar livros disponíveis") # ausyar
+        # print("7. Emprestar livro") # ok
+        print("8. Sair")
         choice = input("Escolha uma opção: ")
-        type_position = input("Função (Administradora/Bibliotecaria): ")
 
         if choice == "1":
             name = input("Nome: ")
@@ -114,6 +130,7 @@ def employee_menu():
             _address = input("Endereço: ")
             _contact = input("Telefone: ")
 
+            type_position = input("Função (Administradora/Bibliotecaria): ")
             if type_position == "Admin":
                 id_admin = input("Adm ID: ")
                 employee = Admin(name, _age, _email, _address, _contact, id_admin)
@@ -128,7 +145,7 @@ def employee_menu():
 
         elif choice == "2":
             admin_id = input("Digite o ID do administrador: ")
-            admin = Admin.load_from_db(admin_id)
+            admin = Admin.load_from_db_admin(admin_id)
             if admin:
                 id = input("ID: ")
                 user_name = input("Nome do Usuário: ")
@@ -139,12 +156,11 @@ def employee_menu():
                 id_user = input("ID do Usuário: ")
                 contact = input("Telefone do Usuário: ")
                 ativo = input("Ativo (True/False): ") == 'True'
-                user = User(id, user_name, password, age, email, address, id_user, contact, ativo)
+                user = User(user_name, password, age, email, address, id_user, contact, ativo)
 
                 user.save_to_db()
             else:
                 print("Administrador não encontrado.")
-        
         # ajustar
         elif choice == '3':
             admin_id = input("Digite o ID do administrador: ")
@@ -156,32 +172,33 @@ def employee_menu():
             else:
                 print("Erro ao remover usuário.")
        
+       #("Milena Martins", 32, "milena@gmail.com", "Rua fontes, 22", "1197485-9945", "1")
         elif choice == '4':
-            librarian = Librarian("Milena Martins", 32, "milena@gmail.com", "Rua fontes, 22", "1197485-9945", "1")
-            available_books = [book for book in librarian.get_books() if book.available]
-            if available_books:
-                print("Livros disponíveis:")
-                for book in available_books:
-                    print(f" - {book.title} por {book.author} (ISBN: {book.isbn})")
-            else:
-                print("Nenhum livro disponível no momento.")
-
-        elif choice == '5':
-            user_name = input("Nome de usuário: ")
-            password = input("Senha: ")
-            user = User(None, user_name, password, None, None, None, None, None, None)
-            librarian = Librarian("Milena Martins", 32, "milena@gmail.com", "Rua fontes, 22", "1197485-9945", "1")
+            librarian_id = input("Digite o ID do bibliotecario: ")
+            librarian = Librarian.load_from_db_librarin(librarian_id)
+            book_menu()
         
-            if user.login(user_name, password):
+        elif choice == '5':
+            librarian_id = input("Digite o ID do bibliotecario: ")
+            librarian = Librarian.load_from_db_librarin(librarian_id)
+            borrow_menu()
 
-                isbn = input("ISBN do livro para emprestar: ")
-                books_to_borrow = [book for book in librarian.get_books() if book.isbn == isbn and book.available]
-                if books_to_borrow:
-                    borrowed_book = librarian.borrow_books(books_to_borrow[0], user)
-                    if borrowed_book:
-                        print(f"Livro com ISBN '{isbn}' emprestado com sucesso.")
-                else:
-                    print(f"Livro com ISBN '{isbn}' não está disponível.")
+        # elif choice == '5':
+        #     user_name = input("Nome de usuário: ")
+        #     password = input("Senha: ")
+        #     user = User(user_name, password, None, None, None, None, None, None)
+        #     librarian = Librarian("Milena Martins", 32, "milena@gmail.com", "Rua fontes, 22", "1197485-9945", "1")
+        
+        #     if user.login(user_name, password):
+
+        #         isbn = input("ISBN do livro para emprestar: ")
+        #         books_to_borrow = [book for book in librarian.get_books() if book.isbn == isbn and book.available]
+        #         if books_to_borrow:
+        #             borrowed_book = librarian.borrow_books(books_to_borrow[0], user)
+        #             if borrowed_book:
+        #                 print(f"Livro com ISBN '{isbn}' emprestado com sucesso.")
+        #         else:
+        #             print(f"Livro com ISBN '{isbn}' não está disponível.")
 
         elif choice == "6":
             print("Saindo...")
@@ -209,23 +226,47 @@ def borrow_menu():
             borrow.save_to_db()
 
         elif choice == '2':
+            isbn = None
+            author = None
+            title = None
+            year_of_publication = None 
+            num_of_editions = None
+            num_of_copies = None
+            num_of_pages = None
+            available = None
+            type_book = None
             id_book = input("Digite o ID do livro: ")
-            book = Book(id_book, None)
+            book = Book(isbn, title, author, year_of_publication, num_of_editions, num_of_copies, num_of_pages, available, type_book)
             borrow = Borrow(None, None, None, None, id_book)
             borrow.returned_book(book)
 
         elif choice == '3':
+            author = None,
+            year_of_publication = None 
+            num_of_editions = None
+            num_of_copies = None
+            num_of_pages = None
+            type_book = None
             id_user = input("Digite o ID do usuário: ")
             id_book = input("Digite o ID do livro: ")
             start_date = input("Digite a data de início (AAAA-MM-DD): ")
             end_date = input("Digite a data de término (AAAA-MM-DD): ")
             borrow = Borrow('RESERVADO', start_date, end_date, id_user, id_book)
-            book = Book(id_book, None)
+            book = Book(author, year_of_publication, num_of_editions, num_of_copies, num_of_pages, type_book)
             borrow.reserve_book(book)
 
         elif choice == '4':
             id_book = input("Digite o ID do livro: ")
-            book = Book(id_book, None)
+            isbn = None
+            title = None
+            author = None,
+            year_of_publication = None 
+            num_of_editions = None
+            num_of_copies = None
+            num_of_pages = None
+            available = None
+            type_book = None
+            book = Book(isbn, title, author, year_of_publication, num_of_editions, num_of_copies, num_of_pages, available, type_book)
             borrow = Borrow(None, None, None, None, id_book)
             borrow.check_available(book)
 
@@ -271,6 +312,10 @@ def book_menu():
         elif choice == "2":
             print("Saindo...")
             break
+
+def exit_program():
+    print("Fechando sistema...")
+    sys.exit(0)
 
 if __name__ == "__main__":
     interactive_cli()

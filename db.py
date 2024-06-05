@@ -23,6 +23,7 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS User (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
+            password TEXT NOT NULL,           
             age INTEGER NOT NULL,
             email TEXT NOT NULL,
             address TEXT NOT NULL, 
@@ -204,10 +205,13 @@ def update_row(table_name, values, condition):
         finally:
             close_connection(connection)
 
-#create_tables()
-#delete_table('Employee')
-#drop_table('Admin')
-#drop_table('Bibliotecaria')
+create_tables()
+
+# drop_table('User')
 # drop_table('Employee')
-# drop_table('Bibliotecaria')
+# drop_table('Book')
+# drop_table('DigitalBook')
+# drop_table('PhysicalBook')
+# drop_table('Borrow')
 # drop_table('Admin')
+# drop_table('Bibliotecaria')
