@@ -23,6 +23,7 @@ def create_tables():
         CREATE TABLE IF NOT EXISTS User (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
+            password TEXT NOT NULL,           
             age INTEGER NOT NULL,
             email TEXT NOT NULL,
             address TEXT NOT NULL, 
@@ -42,7 +43,7 @@ def create_tables():
             num_of_copies INTEGER NOT NULL, 
             num_of_pages INTEGER NOT NULL,                                               
             available BOOLEAN DEFAULT TRUE,
-            type TEXT NOT NULL CHECK (type IN ('PhysicalBook', 'DigitalBook'))       
+            type_book TEXT NOT NULL CHECK (type_book IN ('PhysicalBook', 'DigitalBook'))       
         );
         ''')
         cursor.execute('''
@@ -50,16 +51,38 @@ def create_tables():
             id INTEGER PRIMARY KEY,
             cover_type TEXT NOT NULL,
             weight REAL NOT NULL,
-            FOREIGN KEY (id) REFERENCES Book(id)
+            FOREIGN KEY (id) REFERENCES Book(id) ON DELETE CASCADE ON UPDATE CASCADE
         );
+        ''')
+        cursor.execute('''
+        CREATE TRIGGER IF NOT EXISTS PhysicalBookCheck
+            BEFORE INSERT ON PhysicalBook
+            FOR EACH ROW
+            BEGIN
+                SELECT CASE
+                    WHEN (SELECT type_book FROM Book WHERE id = NEW.id) != 'PhysicalBook'
+                    THEN RAISE (ABORT, 'Tipo inválido para livro fisico')
+                END;
+            END;
         ''')
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS DigitalBook (
             id INTEGER PRIMARY KEY,
             file_size TEXT NOT NULL,
             format TEXT NOT NULL,
-            FOREIGN KEY (id) REFERENCES Book(id)
+            FOREIGN KEY (id) REFERENCES Book(id) ON DELETE CASCADE ON UPDATE CASCADE
             );
+        ''')
+        cursor.execute('''
+        CREATE TRIGGER IF NOT EXISTS DigitalBookCheck
+            BEFORE INSERT ON DigitalBook
+            FOR EACH ROW
+            BEGIN
+                SELECT CASE
+                    WHEN (SELECT type_book FROM Book WHERE id = NEW.id) != 'DigitalBook'
+                    THEN RAISE (ABORT, 'Tipo inválido para livro digital')
+                END;
+            END;
         ''')
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS Borrow (
@@ -81,22 +104,44 @@ def create_tables():
             email TEXT NOT NULL,
             address TEXT NOT NULL,
             contact TEXT NOT NULL,
-            type TEXT NOT NULL CHECK (type IN ('Administradora', 'Biliotecaria'))
+            type_position TEXT NOT NULL CHECK (type_position IN ('Admin', 'Bibliotecaria'))
         );
         ''')
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS Admin (
             id INTEGER PRIMARY KEY,
             id_admin  TEXT NOT NULL,
-            FOREIGN KEY (id) REFERENCES Employee(id)
+            FOREIGN KEY (id) REFERENCES Employee(id) ON DELETE CASCADE ON UPDATE CASCADE
             );
+        ''')
+        cursor.execute('''
+        CREATE TRIGGER IF NOT EXISTS AdminCheck
+            BEFORE INSERT ON Admin
+            FOR EACH ROW
+            BEGIN
+                SELECT CASE
+                    WHEN (SELECT type_position FROM Employee WHERE id = NEW.id) != 'Admin'
+                    THEN RAISE (ABORT, 'Tipo inválido para Admin')
+                END;
+            END;
         ''')
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS Bibliotecaria (
             id INTEGER PRIMARY KEY,
             id_librarian TEXT NOT NULL,               
-            FOREIGN KEY (id) REFERENCES Employee(id)
+            FOREIGN KEY (id) REFERENCES Employee(id) ON DELETE CASCADE ON UPDATE CASCADE
             );
+        ''')
+        cursor.execute('''
+        CREATE TRIGGER IF NOT EXISTS BibliotecariaCheck
+            BEFORE INSERT ON Bibliotecaria
+            FOR EACH ROW
+            BEGIN
+                SELECT CASE
+                    WHEN (SELECT type_position FROM Employee WHERE id = NEW.id) != 'Bibliotecaria'
+                    THEN RAISE (ABORT, 'Tipo inválido para Bibliotecaria')
+                END;
+            END;
         ''')
         connection.commit()
         cursor.close()
@@ -159,3 +204,14 @@ def update_row(table_name, values, condition):
             print(f"Erro ao atualizar uma linha da tabela {table_name}: {e}")
         finally:
             close_connection(connection)
+
+create_tables()
+
+# drop_table('User')
+# drop_table('Employee')
+# drop_table('Book')
+# drop_table('DigitalBook')
+# drop_table('PhysicalBook')
+# drop_table('Borrow')
+# drop_table('Admin')
+# drop_table('Bibliotecaria')

@@ -1,4 +1,6 @@
 from db import create_connection, close_connection
+from books import Book
+
 class Borrow: 
     def __init__(self, status, start_date, end_date, id_user, id_book):
         self.status = status
@@ -75,22 +77,22 @@ class Borrow:
             cursor = connection.cursor()
             cursor.execute("SELECT available FROM Book WHERE id = ?", (book.id,))
             result = cursor.fetchone()
-            if result is not None:
-                book_available = result[0]
-                if not book_available:
-                    cursor.execute("UPDATE Book SET available = TRUE WHERE id = ?", (book.id,))
-                    cursor.execute("DELETE FROM Borrow WHERE id_book = ?", (book.id,))
-                    connection.commit()
-                    if book.id in self.borrowed_books:
-                        self.borrowed_books.remove(book.id)
-                        self.returned_books.append(book.id)
-                        print(f"O livro '{book.id}' foi devolvido com sucesso.")
-                    else:
-                        print(f"Erro: o livro '{book.id}' não está na lista de livros emprestados.")
+            #if result is not None:
+            book_available = cursor.fetchone()
+            if not book_available:
+                cursor.execute("UPDATE Book SET available = TRUE WHERE id = ?", (book.id,))
+                cursor.execute("DELETE FROM Borrow WHERE id_book = ?", (book.id,))
+                connection.commit()
+                if book.id in self.borrowed_books:
+                    self.borrowed_books.remove(book.id)
+                    self.returned_books.append(book.id)
+                    print(f"O livro '{book.id}' foi devolvido com sucesso.")
                 else:
-                    print(f"O livro '{book.id}' não está emprestado pelo usuário.")
+                    print(f"Erro: o livro '{book.title}' não está na lista de livros emprestados.")
             else:
-                print("Livro não encontrado.")
+                print(f"O livro '{book.id}' não está emprestado pelo usuário.")
+            #else:
+            #    print("Livro não encontrado.")
             cursor.close()
             close_connection(connection)
 
@@ -126,4 +128,3 @@ class Borrow:
                 print("Livro não encontrado.")
             cursor.close()
             close_connection(connection)
-

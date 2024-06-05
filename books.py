@@ -9,26 +9,32 @@ class Book:
         self.num_of_copies = num_of_copies
         self.num_of_pages = num_of_pages
         self.available = True
-        self.type = type_book
+        self.type_book = type_book
         self.id = id_
 
     def save_to_db(self):
-         connection = create_connection()
-         if connection:
-             cursor = connection.cursor()
-             cursor.execute("INSERT INTO Book (isbn, title, author, year_of_publication, num_of_editions, num_of_copies, num_of_pages, available, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-                            (self.isbn, self.title, self.author, self.year_of_publication, self.num_of_editions, self.num_of_copies, self.num_of_pages, self.available, self.type))
-             book_id = cursor.lastrowid  #Obter o ID gerado automaticamente
+        connection = create_connection()
+        if connection:
+            cursor = connection.cursor()
+            try:
+                cursor.execute("INSERT INTO Book (isbn, title, author, year_of_publication, num_of_editions, num_of_copies, num_of_pages, available, type_book) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                                (self.isbn, self.title, self.author, self.year_of_publication, self.num_of_editions, self.num_of_copies, self.num_of_pages, self.available, self.type_book))
+                book_id = cursor.lastrowid 
+                
+                if isinstance(self, PhysicalBook):
+                    cursor.execute("INSERT INTO PhysicalBook (id, cover_type, weight) VALUES (?, ?, ?)",
+                                    (book_id, self.cover_type, self.weight))
+                elif isinstance(self, DigitalBook):
+                    cursor.execute("INSERT INTO DigitalBook (id, file_size, format) VALUES (?, ?, ?)",
+                                    (book_id, self.file_size, self.format))
 
-              # Inserir dados na tabela PhysicalBook
-             if isinstance(self, PhysicalBook):
-                 cursor.execute("INSERT INTO PhysicalBook (id, cover_type, weight) VALUES (?, ?, ?)",
-                                (book_id, self.cover_type, self.weight))
-
-             connection.commit()
-             cursor.close()
-             close_connection(connection)
-             print(f"Livro {self.title} do autor {self.author} foi salvo no banco.")
+                connection.commit()
+                print(f"Livro {self.title} do autor {self.author} foi salvo no banco.")
+            except Exception as e:
+                print(f"Erro ao salvar livro no banco de dados: {e}")
+            finally:
+                cursor.close()
+                close_connection(connection)
 
 
     def update_in_db(self):
@@ -36,11 +42,9 @@ class Book:
          if connection:
              cursor = connection.cursor()
 
-            #   Atualizar dados na tabela Book
-             cursor.execute("UPDATE Book SET isbn = ?, title = ?, author = ?, year_of_publication = ?, num_of_editions = ?, num_of_copies = ?, num_of_pages = ?, available = ?, type = ? WHERE id = ?",
-                         (self.isbn, self.title, self.author, self.year_of_publication, self.num_of_editions, self.num_of_copies, self.num_of_pages, self.available, self.type, self.id))
+             cursor.execute("UPDATE Book SET isbn = ?, title = ?, author = ?, year_of_publication = ?, num_of_editions = ?, num_of_copies = ?, num_of_pages = ?, available = ?, type_book = ? WHERE id = ?",
+                         (self.isbn, self.title, self.author, self.year_of_publication, self.num_of_editions, self.num_of_copies, self.num_of_pages, self.available, self.type_book, self.id))
 
-            #   Atualizar dados na tabela PhysicalBook
              if isinstance(self, PhysicalBook):
                  cursor.execute("UPDATE PhysicalBook SET cover_type = ?, weight = ? WHERE id = ?",
                              (self.cover_type, self.weight, self.id))
@@ -112,28 +116,17 @@ class PhysicalBook(Book):
         connection = create_connection()
         if connection:
             cursor = connection.cursor()
-            book_id = cursor.lastrowid  
-            cursor.execute("INSERT INTO PhysicalBook (id, cover_type, weight) VALUES (?, ?, ?)",
-                        (book_id, self.cover_type, self.weight))
-            
-            connection.commit()
-            cursor.close()
-            close_connection(connection)
-            print(f"Livro Físico {self.title} do autor {self.author} foi salvo no banco.")
+            try:
+                cursor.execute("INSERT INTO PhysicalBook (id, cover_type, weight) VALUES (?, ?, ?)",
+                                (self.id, self.cover_type, self.weight))
+                connection.commit()
+                print(f"Livro Físico {self.title} do autor {self.author} foi salvo no banco.")
+            except Exception as e:
+                print(f"Erro ao salvar livro fisico no banco de dados: {e}")
+            finally:
+                cursor.close()
+                close_connection(connection)
 
-    def update_in_db(self):
-        super().update_in_db()
-        connection = create_connection()
-        if connection:
-            cursor = connection.cursor()
-
-            cursor.execute("UPDATE PhysicalBook SET cover_type = ?, weight = ? WHERE id = ?",
-                            (self.cover_type, self.weight, self.id))
-
-            connection.commit()
-            cursor.close()
-            close_connection(connection)
-            print(f"Livro Físico '{self.title}' do autor {self.author} foi atualizado no banco.")
     
     def get_info_book(self):
         super().get_info_book()
@@ -165,25 +158,13 @@ class DigitalBook(Book):
         connection = create_connection()
         if connection:
             cursor = connection.cursor()
-          
-            cursor.execute("INSERT INTO DigitalBook (id, file_size, format) VALUES (?, ?, ?)",
-                        (self.id, self.file_size, self.format))
-            
-            connection.commit()
-            cursor.close()
-            close_connection(connection)
-            print(f"Livro Físico {self.title} do autor {self.author} foi salvo no banco.")
-
-    def update_in_db(self):
-        super().update_in_db()
-
-        connection = create_connection()
-        if connection:
-            cursor = connection.cursor()
-
-            cursor.execute("UPDATE DigitalBook SET file_size = ?, format = ? WHERE id = ?",
-                            (self.file_size, self.format, self.id))
-            connection.commit()
-            cursor.close()
-            close_connection(connection)
-            print(f"Livro Físico '{self.title}' do autor {self.author} foi atualizado no banco.") 
+            try:
+                cursor.execute("INSERT INTO DigitalBook (id, file_size, format) VALUES (?, ?, ?)",
+                                (self.id, self.file_size, self.format))
+                connection.commit()
+                print(f"Livro Digital {self.title} do autor {self.author} foi salvo no banco.")
+            except Exception as e:
+                print(f"Erro ao salvar livro digital no banco de dados: {e}")
+            finally:
+                cursor.close()
+                close_connection(connection)
